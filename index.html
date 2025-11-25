@@ -1,21 +1,144 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-100">
+
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <title>Aplikasi CRUD Siswa</title>
-
-  <link rel="stylesheet" href="style.css">
+  <title>Biodata Siswa Kelas XI</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <style>
+    body {
+      font-size: smaller;
+    }
+    .header-blue {
+      background-color: #0d6efd;
+      padding: 15px 0;
+    }
+    .header-title {
+      color: white;
+      font-weight: bold;
+      margin: 0;
+    }
+    .footer-blue {
+      background-color: #0d6efd;
+      color: white;
+    }
+  </style>
 </head>
+  
+<body class="d-flex flex-column h-100">
+  <!-- Header Biru dengan Tulisan Biodata -->
+  <div class="header-blue">
+    <div class="container">
+      <h1 class="header-title text-center">Biodata</h1>
+    </div>
+  </div>
 
-<body>
-<h1>Selamat Datang di Aplikasi CRUD Siswa</h1>
+  <div class="container mt-4">
+    <table class="table table-striped" id="daftar-bio">
+      <thead>
+        <tr class="table-primary">
+          <th scope="col">#</th>
+          <th scope="col">Nama Lengkap</th>
+          <th scope="col">Jenis Kelamin</th>
+          <th scope="col">Tanggal Lahir</th>
+          <th scope="col">Agama</th>
+          <th scope="col">No. Telepon</th>
+          <th scope="col">Hobi</th>
+          <th scope="col">Cita-cita</th>
+          <th scope="col">Alamat</th>
+          <th scope="col" class="text-center">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Data akan diisi oleh JavaScript -->
+      </tbody>
+    </table>
+    
+    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJWNk0xMiAxOFYyMk0xNy4wNzcgMTcuMDc3TDE5LjI5MiAxOS4yOTJNNC45MDgxOSA0LjkwODJMMi42OTI5MSAyLjY5Mjk1TTE5LjI5MiA0LjkwODJMMTcuMDc3IDIuNjkyOTVNMi42OTI5MSAxOS4yOTJMNC45MDgxOSAxNy4wNzciIHN0cm9rZT0iIzAwN2JmZiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+" style="width: 1.8em; display: block" id="loader">
+    
+    <a href="tambah.html">
+      <button class="btn btn-primary tombol-tambah">Tambah Biodata</button>
+    </a>
+  </div>
+  
+  <!-- Footer dengan Warna yang Sama seperti Header -->
+  <footer class="py-3 footer-blue mt-auto">
+    <p class="text-center text-white mb-0">&copy; 2025 Insan Cemerlang</p>
+  </footer>
 
-// tugas
-// tampilkan menu untuk membuka daftar dan tambah
+<script type="module">
+  import {ambilDaftarBio, hapusdata, formatAngka} from './main.js';
+  
+  $(document).ready(async function(){
+    // Tampilkan loader
+    $('#loader').show();
+    
+    let elemendaftar = $("#daftar-bio > tbody");
+    let daftarbio = await ambilDaftarBio();
+    let nomor = 1;
+    
+    // Sembunyikan loader
+    $('#loader').hide();
+    
+    if (daftarbio.length === 0) {
+      elemendaftar.append(
+        '<tr>' +
+        '<td colspan="10" class="text-center">Tidak ada data</td>' +
+        '</tr>'
+      );
+    } else {
+      daftarbio.forEach((data)=>{
+        // Format tanggal lahir
+        let formattedDate = data.tgllahir;
+        if (data.tgllahir) {
+          const dateObj = new Date(data.tgllahir);
+          if (!isNaN(dateObj)) {
+            formattedDate = dateObj.toLocaleDateString('id-ID', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric'
+            });
+          }
+        }
+        
+        elemendaftar.append(
+          '<tr>' +
+          '<th scope="row">' + nomor + '</th>' +
+          '<td>' + (data.nama || '-') + '</td>' +
+          '<td>' + (data.jk || '-') + '</td>' +
+          '<td>' + (formattedDate || '-') + '</td>' +
+          '<td>' + (data.agama || '-') + '</td>' +
+          '<td>' + (data.nohp || '-') + '</td>' +
+          '<td>' + (data.hobi || '-') + '</td>' +
+          '<td>' + (data.cita || '-') + '</td>' +
+          '<td>' + (data.alamat || '-') + '</td>' +
+          '<td>' + 
+          ' <button class="btn btn-warning ubah" data="' + data.id + '">Ubah</button>' +
+          ' <button class="btn btn-danger hapus" data="' + data.id + '">Hapus</button>' +
+          '</td>' +
+          '</tr>'
+        );
+        nomor = nomor + 1;
+      });
+    }
+    
+    // Event handler untuk tombol hapus
+    $('.hapus').click(async function() {
+      if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+        $('#loader').show();
+        await hapusdata($(this).attr('data'));
+        location.reload();
+      }
+    });
 
-  <script></script>
+    // Event handler untuk tombol ubah
+    $('.ubah').click(async function() {
+      window.location.replace('edit.html?docId=' + $(this).attr('data'));
+    });
+  });
+</script>
 </body>
 </html>

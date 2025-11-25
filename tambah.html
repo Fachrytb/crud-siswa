@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>tambah</title>
+  <title>Form Tambah Siswa</title>
   <link rel="stylesheet" href="style.css"/>
 </head>
 
@@ -11,44 +11,86 @@
   <div class="container">
     <h1>Form Tambah Siswa</h1>
     
-    <form id=formTambah>
-    <label>NIS</label>
-    <input type="text"  id="nis"/>
-    
-    <label>Nama</label>
-    <input type="text" id="nama"/>
-    
-    <label>Kelas</label>
-    <select name="kelas" id="kelas">
-      <option value="X">X</option>
-      <option value="XI">XI</option>
-      <option value="XII">XII</option>
+    <form id="formTambah">
+      <label for="nama">Nama Siswa:</label>
+      <input type="text" name="nama" id="nama" required>
       
-    </select>
-    <button id="tombolSimpan">Simpan</button>
-    <a href="daftar.html">Pergi ke Halaman Daftar Siswa</a>
+      <label for="jk">Jenis Kelamin:</label>
+      <select name="jk" id="jk" required>
+        <option value="">Pilih Jenis Kelamin</option>
+        <option value="Laki-laki">Laki-laki</option>
+        <option value="Perempuan">Perempuan</option>
+          <option value="Princess">Princess</option>
+      </select>
+      
+      <label for="lahir">Tanggal Lahir:</label>
+      <input type="date" name="tgllahir" id="lahir" required>
+      
+      <label for="agama">Agama:</label>
+      <select name="agama" id="agama" required>
+        <option value="">Pilih Agama</option>
+        <option value="Islam">Islam</option>
+        <option value="Katholik">Katholik</option>
+        <option value="Protestan">Protestan</option>
+        <option value="Budha">Budha</option>
+        <option value="Hindu">Hindu</option>
+        <option value="Konghuchu">Konghuchu</option>
+      </select>
+      
+      <label for="hobi">Hobi:</label>
+      <input type="text" name="hobi" id="hobi" required>
+      
+      <label for="cita">Cita-cita:</label>
+      <input type="text" name="cita" id="cita" required>
+      
+      <label for="nohp">Nomor Telepon:</label>
+      <input type="tel" name="nohp" id="nohp" required>
+      
+      <label for="alamat">Alamat:</label>
+      <textarea name="alamat" id="alamat" rows="4" placeholder="Alamat" required></textarea>
+      
+      <button type="submit">Submit</button>
+      <a href="index.html" class="button secondary">Kembali ke Daftar Siswa</a>
     </form>
-    
-     
   </div>
   
   <script type="module">
-    import{tambahDataSiswa} from './main.js';
-    // mengirimkan data siswa dari form
-    const formTambah = document.getElementById('formTambah')
+    import { tambahDataSiswa } from './main.js';
     
-    // even ketika form disubmit
-
-  formTambah.addEventListener('submit', function(e) {
-    // mencegah reload halaman
-    e.preventDefault(); 
+    const formTambah = document.getElementById('formTambah');
     
-    //eksekusi fungsi tambah data siswa 
-    tambahDataSiswa()
-    
-
-  });
-</script>
+    formTambah.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      // Validasi form
+      if (!formTambah.checkValidity()) {
+        alert('Harap lengkapi semua field yang diperlukan!');
+        return;
+      }
+      
+      // Mengumpulkan data dari form
+      const formData = new FormData(formTambah);
+      const data = {
+        nama: formData.get('nama'),
+        jk: formData.get('jk'),
+        tgllahir: formData.get('tgllahir'),
+        agama: formData.get('agama'),
+        hobi: formData.get('hobi'),
+        cita: formData.get('cita'),
+        nohp: formData.get('nohp'),
+        alamat: formData.get('alamat')
+      };
+      
+      // Menambahkan data ke Firebase
+      const berhasil = await tambahDataSiswa(data);
+      
+      if (berhasil) {
+        alert('Data siswa berhasil ditambahkan!');
+        window.location.href = 'index.html';
+      } else {
+        alert('Terjadi kesalahan saat menambahkan data. Silakan coba lagi.');
+      }
+    });
   </script>
 </body>
 </html>
